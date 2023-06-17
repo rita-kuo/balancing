@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { HTMLProps, useMemo } from 'react';
 import { IconType } from 'react-icons';
+import React from 'react';
 
 const disabled = 'text-gray-200';
 const enabled = 'hover:text-primary-500';

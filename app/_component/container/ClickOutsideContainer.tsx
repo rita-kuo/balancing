@@ -1,6 +1,7 @@
 'use client';
 
 import { HTMLProps, useCallback, useEffect, useRef } from 'react';
+import React from 'react';
 
 interface ClickOutsideContainerProps extends HTMLProps<HTMLDivElement> {
     onOutsideClick: () => void;

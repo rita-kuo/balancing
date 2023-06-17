@@ -1,4 +1,5 @@
 import { HTMLProps } from 'react';
+import React from 'react';
 
 const style = 'border border-primary-300 rounded p-4 ';
 

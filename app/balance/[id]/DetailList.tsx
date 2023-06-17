@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import ListItemContainer from '@/app/_component/container/ListItemContainer';
 import { DetailType } from '@prisma/client';
 import { Detail } from '@/app/_model/balance';
@@ -8,7 +10,7 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { useEffect, useState } from 'react';
 import { get } from '@/app/_util/api';
 
-const Detail: React.FC<Detail> = (props) => {
+const DetailItem: React.FC<Detail> = (props) => {
     return (
         <ListItemContainer className='[&>*]:w-full [&>*+*]:mt-2'>
             <div className='flex justify-between items-end text-sm'>
@@ -62,7 +64,7 @@ const DetailList: React.FC<{ balanceId: number; page: number }> = (props) => {
     return (
         <>
             {details.map((detail) => (
-                <Detail key={`detail-${detail.id}`} {...detail} />
+                <DetailItem key={`detail-${detail.id}`} {...detail} />
             ))}
         </>
     );

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { PropsWithChildren } from 'react';
 import Header from './Header';
 import ModalContextProvider from '../modal/ModalContextProvider';

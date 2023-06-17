@@ -1,6 +1,8 @@
+import React from 'react';
+
 import { IoClose } from '@/app/_lib/icons';
 import { clickableIconStyle } from '@/app/_style/icons';
-import { PropsWithChildren, useMemo } from 'react';
+import { PropsWithChildren } from 'react';
 import ClickOutsideContainer from '../container/ClickOutsideContainer';
 
 export interface ModalProps extends PropsWithChildren {

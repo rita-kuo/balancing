@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import React, { ButtonHTMLAttributes, useMemo } from 'react';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonAttr = ButtonHTMLAttributes<HTMLButtonElement>;
+export interface ButtonProps extends ButtonAttr {
     href?: string;
     icon?: React.FC;
     loading?: boolean;
@@ -12,7 +13,7 @@ const style =
 const hoverStyle = 'hover:bg-primary-500';
 const disabledStyle = 'disabled:bg-gray-200 disabled:text-gray-300';
 const Button: React.FC<ButtonProps> = (props) => {
-    const { icon, href, ...buttonProps } = props;
+    const { icon, href, loading, ...buttonProps } = props;
     const content = useMemo(
         () => (
             <button

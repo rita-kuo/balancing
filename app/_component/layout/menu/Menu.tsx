@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { IoClose } from '@/app/_lib/icons';
 import { ModalProps } from '../../modal/Modal';
 import { clickableIconStyle } from '@/app/_style/icons';

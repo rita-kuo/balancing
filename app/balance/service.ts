@@ -1,4 +1,4 @@
-import { Balance, Detail, OwnerType, ShouldPay, User } from '@prisma/client';
+import { Balance, Detail, OwnerType, ShouldPay } from '@prisma/client';
 import { execute } from '../_util/prisma';
 import {
     BalanceAnalysis,
@@ -130,11 +130,6 @@ const BalanceService = () => {
                                 })
                                 .then((group) => group.members)
                                 .then(async (members) => {
-                                    const res: (User & {
-                                        paid: Spend;
-                                        shouldPay: Spend;
-                                    })[] = [];
-
                                     return {
                                         currencies,
                                         users: members.map((user) => ({

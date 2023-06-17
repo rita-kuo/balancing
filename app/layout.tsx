@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Layout from './_component/layout/Layout';
 import './globals.css';
 

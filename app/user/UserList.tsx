@@ -34,7 +34,7 @@ const UserItem: React.FC<
     );
 };
 
-const UserList: React.FC = (props) => {
+const UserList: React.FC = () => {
     const localStorage = useLocalStorage();
 
     const [users, setUsers] = useState<User[]>([]);

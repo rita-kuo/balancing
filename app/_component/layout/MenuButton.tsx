@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { IoMenu } from '@/app/_lib/icons';
 import { useModal } from '../../_hook/useModal';
 import Menu from './menu/Menu';

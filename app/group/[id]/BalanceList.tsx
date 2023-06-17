@@ -7,7 +7,7 @@ import { Balance, Balance as Model } from '@prisma/client';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
-const Balance: React.FC<Model> = (props) => {
+const BalanceItem: React.FC<Model> = (props) => {
     const icon = currencyIcon[props.currency];
     return (
         <Link href={`/balance/${props.id}`}>
@@ -29,7 +29,7 @@ const BalanceList: React.FC<{ groupId: number }> = (props) => {
     return (
         <div className='grid gap-1'>
             {balanceList.map((balance) => (
-                <Balance key={`balance-${balance.id}`} {...balance} />
+                <BalanceItem key={`balance-${balance.id}`} {...balance} />
             ))}
         </div>
     );

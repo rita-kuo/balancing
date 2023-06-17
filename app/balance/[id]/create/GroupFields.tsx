@@ -1,77 +1,50 @@
-import Checkbox from '@/app/_component/input/Checkbox';
-import Select from '@/app/_component/input/Select';
-import detail from '../DetailList';
-import { Field, Title } from './CreateForm';
-import { Dispatch, useMemo } from 'react';
-import { ShouldPay, User } from '@prisma/client';
+import React from 'react';
+
+import { useMemo } from 'react';
+import { User } from '@prisma/client';
+import SelectField from '@/app/_component/form/field/SelectField';
+import CheckboxMultiSelect from '@/app/_component/form/input/CheckboxMultiSelect';
+import { ErrorMessage } from '@hookform/error-message';
+import ErrorMessageLayout from '@/app/_component/form/ErrorMessageLayout';
+import Title from '@/app/_component/form/field/Title';
 
 interface GroupFieldsProps {
     groupMembers: User[];
     payById: number;
     setPayById: (value: number) => void;
-    shouldPayList: Set<User>;
-    setShouldPayList: Dispatch<React.SetStateAction<Set<User>>>;
 }
 const GroupFields: React.FC<GroupFieldsProps> = (props) => {
-    const allShouldPay = useMemo(
-        () =>
-            !props.groupMembers.some(
-                (member) => !props.shouldPayList.has(member)
-            ),
-        [props.groupMembers, props.shouldPayList]
-    );
-
     const memberOptions = useMemo(
         () =>
             props.groupMembers?.map((member) => ({
                 title: member.name,
-                value: member.id.toString(),
+                value: member.id,
             })) || [],
         [props.groupMembers]
     );
 
     return (
         <>
-            <Field>
-                <Title>支付者</Title>
-                <Select
+            <SelectField
+                options={memberOptions}
+                name='payById'
+                label='支付者'
+                option={{ valueAsNumber: true }}
+            />
+            <div className='flex gap-4'>
+                <Title required className='mb-auto' label='應支付者' />
+                <CheckboxMultiSelect
+                    name='shouldPayList'
                     options={memberOptions}
-                    select={props.payById.toString()}
-                    onChange={(option) =>
-                        props.setPayById(
-                            (option && Number.parseInt(option.value)) || 0
-                        )
-                    }
+                    registerOption={{
+                        validate: {
+                            minLength: (val) =>
+                                val.length > 0 || '至少要有一位應支付者',
+                        },
+                    }}
                 />
-            </Field>
-            <Field>
-                <Title className='mb-auto'>應支付者</Title>
-                <div>
-                    <Checkbox
-                        title={allShouldPay ? '取消選取全部' : '選取全部'}
-                        value={allShouldPay}
-                        onChange={(value) =>
-                            props.setShouldPayList(
-                                new Set(value ? props.groupMembers || [] : [])
-                            )
-                        }
-                    />
-                    {props.groupMembers.map((member) => (
-                        <Checkbox
-                            key={`member-${member.id}`}
-                            title={member.name}
-                            value={props.shouldPayList.has(member)}
-                            onChange={(select) =>
-                                props.setShouldPayList((origin) => {
-                                    if (select) origin.add(member);
-                                    else origin.delete(member);
-                                    return new Set(origin);
-                                })
-                            }
-                        />
-                    ))}
-                </div>
-            </Field>
+            </div>
+            <ErrorMessage name='shouldPayList' as={<ErrorMessageLayout />} />
         </>
     );
 };

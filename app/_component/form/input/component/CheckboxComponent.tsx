@@ -1,12 +1,14 @@
+import React from 'react';
+
 import { IoCheckbox, IoSquareOutline } from 'react-icons/io5';
 
-interface CheckboxProps {
+interface CheckboxComponentProps {
     value: boolean;
     title: string;
     onChange: (val: boolean) => void;
 }
 
-const Checkbox: React.FC<CheckboxProps> = (props) => {
+const CheckboxComponent: React.FC<CheckboxComponentProps> = (props) => {
     return (
         <div
             className='flex items-center gap-1 select-none cursor-pointer'
@@ -18,4 +20,4 @@ const Checkbox: React.FC<CheckboxProps> = (props) => {
     );
 };
 
-export default Checkbox;
+export default CheckboxComponent;

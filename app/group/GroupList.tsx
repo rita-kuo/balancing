@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { Group as Model } from '@/app/_model/group';
 import Link from 'next/link';
 import ListItemContainer from '../_component/container/ListItemContainer';

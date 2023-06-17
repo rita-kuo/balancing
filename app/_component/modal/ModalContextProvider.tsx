@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { PropsWithChildren, ReactElement, useState } from 'react';
 import Shadow from './Shadow';
 import { ModalContext } from '@/app/_context/ModalContext';

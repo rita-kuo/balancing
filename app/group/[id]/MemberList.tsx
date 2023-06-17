@@ -1,5 +1,7 @@
 'use client';
 
+import React from 'react';
+
 import { IoPersonCircle } from '@/app/_lib/icons';
 import { get } from '@/app/_util/api';
 import { User } from '@prisma/client';

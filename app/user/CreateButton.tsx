@@ -1,71 +1,54 @@
 'use client';
 
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useModal } from '../_hook/useModal';
 import Button from '../_component/button/Button';
 import Modal, { ModalProps } from '../_component/modal/Modal';
 import { IoAdd } from '@/app/_lib/icons';
 import { post } from '@/app/_util/api';
 import { useRouter } from 'next/navigation';
-import { User } from '@prisma/client';
-import TextInput from '../_component/input/TextInput';
+import { FieldValues } from 'react-hook-form';
+import { emailResisterOptions } from '../_constant/formRegisterOptions';
+import Form from '../_component/form/Form';
+import SubmitButton from '../_component/form/SubmitButton';
+import { InputField } from '../_component/form/field/InputField';
 
 const createUser = '新增使用者';
 
 const CreateModal: React.FC<ModalProps> = (props) => {
-    const [loading, setLoading] = useState(false);
-    const [user, setUser] = useState<User>({
-        name: '',
-        email: '',
-    } as User);
-
-    const valid = useMemo(() => user.name && user.email, [user]);
     const { close } = useModal();
-
     const router = useRouter();
 
+    const onSubmit = useCallback(
+        async (data: FieldValues) => {
+            await post('/api/user', data)
+                .then((_) => {
+                    close();
+                    router.push(`/message?href=/user&message=新增成功`);
+                })
+                .catch((err) => {
+                    close();
+                    router.push(`/message?href=/user&message=新增失敗${err}`);
+                });
+        },
+        [close, router]
+    );
+
     return (
-        <Modal {...props}>
-            <div className='[&>*+*]:mt-2 w-full'>
+        <Modal closeWhenClickOutside {...props}>
+            <Form className='[&>*+*]:mt-2 w-full' onSubmit={onSubmit}>
                 <h1>{createUser}</h1>
-                <div>
-                    <div>名稱</div>
-                    <TextInput
-                        value={user.name}
-                        onChange={(name) => setUser({ ...user, name })}
-                    />
-                </div>
-                <div>
-                    <div>Email</div>
-                    <TextInput
-                        value={user.email}
-                        onChange={(email) => setUser({ ...user, email })}
-                    />
-                </div>
-                <Button
-                    loading={loading}
-                    disabled={!valid}
-                    className='w-full justify-center'
-                    onClick={() => {
-                        setLoading(true);
-                        post('/api/user', user)
-                            .then((_) => {
-                                close();
-                                router.push(
-                                    `/message?href=/user&message=新增成功`
-                                );
-                            })
-                            .catch((err) => {
-                                close();
-                                router.push(
-                                    `/message?href=/user&message=新增失敗${err}`
-                                );
-                            });
-                    }}
-                >
+                <InputField required label='名稱' name='name' />
+                <InputField
+                    required
+                    label='Email'
+                    name='email'
+                    option={emailResisterOptions}
+                />
+                <SubmitButton className='w-full justify-center'>
                     新增
-                </Button>
-            </div>
+                </SubmitButton>
+            </Form>
         </Modal>
     );
 };

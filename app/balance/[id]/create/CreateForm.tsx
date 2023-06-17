@@ -1,41 +1,20 @@
 'use client';
 
-import CurrencySelect from '@/app/_component/britad/balance/CurrencySelect';
-import NumberInput from '@/app/_component/input/NumberInput';
-import TextInput from '@/app/_component/input/TextInput';
-import React, {
-    HTMLProps,
-    PropsWithChildren,
-    useEffect,
-    useMemo,
-    useState,
-} from 'react';
-import {
-    Balance,
-    Detail,
-    Group,
-    OwnerType,
-    ShouldPay,
-    User,
-} from '@prisma/client';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Balance, Detail, Group, OwnerType, User } from '@prisma/client';
 import useLocalStorage from '@/app/_hook/useLocalStorage';
 import GroupFields from './GroupFields';
-import Button from '@/app/_component/button/Button';
 import { get, post } from '@/app/_util/api';
-import Modal from '@/app/_component/modal/Modal';
 import { useModal } from '@/app/_hook/useModal';
 import { useRouter } from 'next/navigation';
-import DetailTypeSelect from '@/app/_component/britad/balance/DetailTypeSelect';
-
-export const Field: React.FC<PropsWithChildren> = (props) => (
-    <div className='flex items-center gap-2 mt-5'>{props.children}</div>
-);
-
-export const Title: React.FC<HTMLProps<HTMLDivElement>> = (props) => (
-    <div className={`whitespace-nowrap ${props.className}`}>
-        {props.children}
-    </div>
-);
+import DetailTypeField from '@/app/_component/britad/balance/DetailTypeField';
+import Form from '@/app/_component/form/Form';
+import { InputField } from '@/app/_component/form/field/InputField';
+import { CurrencySelect } from '@/app/_component/britad/balance/CurrencySelect';
+import { FieldValues } from 'react-hook-form';
+import SubmitButton from '@/app/_component/form/SubmitButton';
+import Input from '@/app/_component/form/input/Input';
+import Title from '@/app/_component/form/field/Title';
 
 type CreateFormProps = {
     balanceId: number;
@@ -55,8 +34,8 @@ type BalanceType = Partial<
 const CreateForm: React.FC<CreateFormProps> = (props) => {
     const localstorage = useLocalStorage();
 
-    const [loading, setLoading] = useState(false);
     const [balance, setBalance] = useState<BalanceType>({} as Balance);
+    const defaultCurrency = useMemo(() => balance.currency, [balance]);
 
     const { close } = useModal();
     const router = useRouter();
@@ -70,16 +49,29 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         payById: parseInt(localstorage.get('userId') || ''),
     } as Detail);
 
-    const [shouldPayList, setShouldPayList] = useState<Set<User>>(
-        new Set(balance.group?.members)
-    );
-
-    const isValid = useMemo(
-        () =>
-            detail.title &&
-            detail.amount &&
-            (balance.ownerType !== 'GROUP' || shouldPayList.size),
-        [detail, balance.ownerType, shouldPayList]
+    const onCreate = useCallback(
+        async (data: FieldValues) => {
+            data = {
+                ...data,
+                shouldPayList: (data.shouldPayList as number[]).map((num) => ({
+                    userId: num,
+                })),
+            };
+            await post(`/api/balance/${balance.id}/detail`, data)
+                .then((_) => {
+                    close();
+                    router.push(
+                        `/message?href=/balance/${balance.id}&message=新增成功`
+                    );
+                })
+                .catch((err) => {
+                    close();
+                    router.push(
+                        `/message?href=/balance/${balance.id}&message=新增失敗${err}`
+                    );
+                });
+        },
+        [balance, close, router]
     );
 
     useEffect(() => {
@@ -100,76 +92,38 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     }, [balance]);
 
     return (
-        <>
-            <Field>
-                <Title>項目</Title>
-                <TextInput
-                    value={detail.title}
-                    onChange={(title) => setDetail({ ...detail, title })}
-                />
-            </Field>
-            <Field>
-                <Title>類型</Title>
-                <DetailTypeSelect
-                    type={detail.type}
-                    onChange={(type) => setDetail({ ...detail, type })}
-                />
-            </Field>
-            <Field>
-                <Title>金額</Title>
+        <Form
+            onSubmit={onCreate}
+            defaultValue={{
+                balanceId: props.balanceId,
+            }}
+        >
+            <InputField
+                required
+                label='項目'
+                name='title'
+                direction='horizontal'
+            />
+            <DetailTypeField />
+            <div className='flex gap-2 items-center [&>*+*]:my-auto'>
+                <Title required label='金額' />
                 <CurrencySelect
-                    value={detail.currency}
-                    onChange={(currency) => setDetail({ ...detail, currency })}
+                    name='currency'
+                    defaultValue={defaultCurrency}
                 />
-                <NumberInput
-                    value={detail.amount}
-                    onChange={(amount) => setDetail({ ...detail, amount })}
-                    onFocus={(event) => {
-                        if (!parseInt(event.target.value))
-                            event.target.value = '';
-                    }}
-                />
-            </Field>
+                <Input type='number' name='amount' option={{ min: 1 }} />
+            </div>
             {balance.ownerType === OwnerType.GROUP && (
                 <GroupFields
                     groupMembers={balance.group?.members || []}
                     payById={detail.payById}
                     setPayById={(payById) => setDetail({ ...detail, payById })}
-                    shouldPayList={shouldPayList}
-                    setShouldPayList={setShouldPayList}
                 />
             )}
-            <Button
-                loading={loading}
-                className='w-full justify-center mt-5'
-                disabled={!isValid}
-                onClick={() => {
-                    setLoading(true);
-                    post(`/api/balance/${balance.id}/detail`, {
-                        ...detail,
-                        shouldPayList: Array.from(shouldPayList).map(
-                            (user) => ({
-                                userId: user.id,
-                            })
-                        ),
-                    } as Detail & { shouldPayList: ShouldPay[] })
-                        .then((_) => {
-                            close();
-                            router.push(
-                                `/message?href=/balance/${balance.id}&message=新增成功`
-                            );
-                        })
-                        .catch((err) => {
-                            close();
-                            router.push(
-                                `/message?href=/balance/${balance.id}&message=新增失敗${err}`
-                            );
-                        });
-                }}
-            >
+            <SubmitButton className='w-full justify-center mt-5'>
                 新增
-            </Button>
-        </>
+            </SubmitButton>
+        </Form>
     );
 };
 

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Logo from '../britad/Logo';
 import MenuButton from './MenuButton';
 

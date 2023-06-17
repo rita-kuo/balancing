@@ -1,62 +1,45 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { useModal } from '../_hook/useModal';
-import { Group } from '@/app/_model/group';
 import Button from '../_component/button/Button';
 import Modal, { ModalProps } from '../_component/modal/Modal';
 import { IoAdd } from '@/app/_lib/icons';
 import { post } from '@/app/_util/api';
 import { useRouter } from 'next/navigation';
-import TextInput from '../_component/input/TextInput';
+import Form from '../_component/form/Form';
+import { InputField } from '../_component/form/field/InputField';
+import SubmitButton from '../_component/form/SubmitButton';
+import { FieldValues } from 'react-hook-form';
 
 const createGroup = '新增群組';
 
 const CreateModal: React.FC<ModalProps> = (props) => {
-    const [loading, setLoading] = useState(false);
-    const [group, setGroup] = useState<Group>({
-        name: '',
-    } as Group);
-    const valid = useMemo(() => group.name, [group]);
     const { close } = useModal();
 
     const router = useRouter();
 
+    const onSubmit = async (data: FieldValues) => {
+        await post('/api/group', data)
+            .then((_) => {
+                close();
+                router.push(`/message?href=/group&message=新增成功`);
+            })
+            .catch((err) => {
+                close();
+                router.push(`/message?href=/group&message=新增失敗${err}`);
+            });
+    };
+
     return (
         <Modal {...props}>
-            <div className='[&>*+*]:mt-2 w-full'>
+            <Form className='[&>*+*]:mt-2 w-full' onSubmit={onSubmit}>
                 <h1>{createGroup}</h1>
-                <div>
-                    <div>名稱</div>
-                    <TextInput
-                        value={group.name}
-                        onChange={(name) => setGroup({ ...group, name })}
-                    />
-                </div>
-                <Button
-                    loading={loading}
-                    disabled={!valid}
-                    className='w-full justify-center'
-                    onClick={() => {
-                        setLoading(true);
-                        post('/api/group', group)
-                            .then((_) => {
-                                close();
-                                router.push(
-                                    `/message?href=/group&message=新增成功`
-                                );
-                            })
-                            .catch((err) => {
-                                close();
-                                router.push(
-                                    `/message?href=/group&message=新增失敗${err}`
-                                );
-                            });
-                    }}
-                >
+                <InputField required label='名稱' name='name' />
+                <SubmitButton className='w-full justify-center'>
                     新增
-                </Button>
-            </div>
+                </SubmitButton>
+            </Form>
         </Modal>
     );
 };
