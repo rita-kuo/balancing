@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["views"]
+  binaryTargets = ["darwin-arm64", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  email String @unique 
+  name String
+  group Group[]
+  details Detail[]
+  shouldPay ShouldPay[]
+}
+
+model Group {
+  id Int @id @default(autoincrement())
+  name String 
+  members User[]
+  balance Balance[]
+}
+
+enum Currency {
+  TWD
+  YEN
+}
+
+enum OwnerType {
+  PERSONAL
+  GROUP
+}
+
+model Balance {
+  id Int @id @default(autoincrement())
+  name String
+  start DateTime?
+  end DateTime?
+  currency Currency @default(TWD)
+  ownerType OwnerType
+  ownerId Int
+  group Group @relation(fields: [ownerId], references: [id], map: "groupId")
+  details Detail[]
+}
+
+enum DetailType {
+  INCOME
+  EXPENSE
+}
+
+model Detail {
+  id Int @id @default(autoincrement())
+  balanceId Int
+  balance Balance @relation(fields: [balanceId], references: [id])
+  type DetailType
+  title String
+  currency Currency
+  amount Int
+  payById Int
+  payBy User @relation(fields: [payById], references: [id])
+  shouldPayList ShouldPay[]
+  date DateTime @default(now())
+}
+
+model ShouldPay {
+  id Int @id @default(autoincrement())
+  detailId Int
+  detail Detail @relation(fields: [detailId], references: [id])
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+}
