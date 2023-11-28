@@ -12,10 +12,10 @@ const ModalContextProvider: React.FC<PropsWithChildren> = (props) => {
         <ModalContext.Provider value={{ setModal }}>
             {props.children}
             {modal && (
-                <>
+                <div className='fixed top-0 w-full h-full'>
                     <Shadow />
                     {modal}
-                </>
+                </div>
             )}
         </ModalContext.Provider>
     );

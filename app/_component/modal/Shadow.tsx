@@ -2,7 +2,7 @@ import React from 'react';
 
 const Shadow: React.FC = (_) => {
     return (
-        <div className='absolute top-0 w-screen h-screen bg-black opacity-30' />
+        <div className='absolute top-0 w-full h-screen bg-black opacity-30' />
     );
 };
 
