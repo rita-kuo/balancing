@@ -52,6 +52,7 @@ const AddMemberButton: React.FC<{ groupId: number }> = (props) => {
     return (
         <Button
             onClick={() => open(<AddMemberModal {...props} onClose={close} />)}
+            className='min-w-max h-max'
         >
             {addMember}
         </Button>

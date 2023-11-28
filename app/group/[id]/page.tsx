@@ -11,13 +11,11 @@ export default async function Page(props: PageProps) {
     const group = await groupService().getGroupById(groupId);
     return (
         <div className='[&>*+*]:mt-5'>
-            <div className='flex justify-between'>
-                <div className='flex gap-4 items-end'>
-                    <div className='font-bold text-3xl'>{group?.name}</div>
-                    <div className='flex items-center'>
-                        <IoPerson className='mr-1' />
-                        {group?.members.length}
-                    </div>
+            <div className='flex justify-between gap-4 items-end'>
+                <div className='font-bold text-3xl'>{group?.name}</div>
+                <div className='flex items-center'>
+                    <IoPerson className='mr-1' />
+                    {group?.members.length}
                 </div>
                 <AddMemberButton groupId={groupId} />
             </div>
