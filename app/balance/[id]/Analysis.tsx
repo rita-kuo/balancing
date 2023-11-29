@@ -33,40 +33,46 @@ const Analysis: React.FC<AnalysisProps> = (props) => {
         <Collapse ref={collapse} title={<div className='font-bold'>分析</div>}>
             <div className='grid md:grid-cols-3 gap-2 mt-2'>
                 {analysis?.users.map((user) => {
-                    const userAnalysis = analysis.currencies.map((currency) => {
-                        const diff =
-                            user.shouldPay[currency] - user.paid[currency];
-                        return (
-                            <div
-                                key={currency}
-                                className='flex items-center justify-between'
-                            >
-                                <div className='flex gap-1 items-center text-sm'>
-                                    <div className='text-xs'>
-                                        {currencyIcon[currency]}
+                    const userAnalysis = analysis.currencies
+                        .filter(
+                            (currency) =>
+                                !!user.shouldPay[currency] ||
+                                !!user.paid[currency]
+                        )
+                        .map((currency) => {
+                            const diff =
+                                user.shouldPay[currency] - user.paid[currency];
+                            return (
+                                <div
+                                    key={currency}
+                                    className='flex items-center justify-between'
+                                >
+                                    <div className='flex gap-1 items-center text-sm'>
+                                        <div className='text-xs flex gap-1'>
+                                            {currencyIcon[currency]}
+                                        </div>
+                                        <div className='font-bold'>
+                                            {user.shouldPay[currency]}
+                                        </div>
                                     </div>
-                                    <div className='font-bold'>
-                                        {user.shouldPay[currency]}
-                                    </div>
+                                    {diff !== 0 && (
+                                        <div className='flex gap-1 items-center text-xs'>
+                                            {diff > 0 ? (
+                                                <div className='text-red-400'>
+                                                    待支付
+                                                </div>
+                                            ) : (
+                                                <div className='text-lime-600'>
+                                                    待收回
+                                                </div>
+                                            )}
+                                            {currencyIcon[currency]}
+                                            {Math.abs(diff)}
+                                        </div>
+                                    )}
                                 </div>
-                                {diff !== 0 && (
-                                    <div className='flex gap-1 items-center text-xs'>
-                                        {diff > 0 ? (
-                                            <div className='text-red-400'>
-                                                待支付
-                                            </div>
-                                        ) : (
-                                            <div className='text-lime-600'>
-                                                待收回
-                                            </div>
-                                        )}
-                                        {currencyIcon[currency]}
-                                        {Math.abs(diff)}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    });
+                            );
+                        });
 
                     return (
                         <ListItemContainer
