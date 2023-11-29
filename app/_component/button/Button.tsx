@@ -9,7 +9,7 @@ export interface ButtonProps extends ButtonAttr {
 }
 
 const style =
-    'flex items-center gap-1 py-2 px-3 rounded select-none bg-primary-400';
+    'flex items-center gap-0.5 py-1 px-2 rounded select-none bg-primary-400 text-sm';
 const hoverStyle = 'hover:bg-primary-500';
 const disabledStyle = 'disabled:bg-gray-200 disabled:text-gray-300';
 const Button: React.FC<ButtonProps> = (props) => {

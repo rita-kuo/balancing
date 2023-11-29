@@ -11,10 +11,10 @@ export default async function Page(props: PageProps) {
     const group = await groupService().getGroupById(groupId);
     return (
         <div className='[&>*+*]:mt-5'>
-            <div className='flex gap-4 items-end'>
+            <div className='flex gap-2 items-end'>
                 <div className='flex-1 font-bold text-3xl'>{group?.name}</div>
                 <div className='flex items-center'>
-                    <IoPerson className='mr-1' />
+                    <IoPerson className='mr-0.5' />
                     {group?.members.length}
                 </div>
                 <AddMemberButton groupId={groupId} />
@@ -24,7 +24,7 @@ export default async function Page(props: PageProps) {
             </div>
             <div className='border-t' />
             <div className='flex items-end'>
-                <div className='text-2xl font-bold'>收支表</div>
+                <div className='text-xl font-bold'>收支表</div>
                 <CreateBalaceButton ownerType='GROUP' ownerId={groupId} />
             </div>
             <div>

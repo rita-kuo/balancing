@@ -27,7 +27,7 @@ const BalanceList: React.FC<{ groupId: number }> = (props) => {
     }, [props.groupId]);
 
     return (
-        <div className='grid gap-1'>
+        <div className='grid gap-1 md:grid-cols-3 md:gap-2'>
             {balanceList.map((balance) => (
                 <BalanceItem key={`balance-${balance.id}`} {...balance} />
             ))}
