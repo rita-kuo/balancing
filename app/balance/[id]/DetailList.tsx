@@ -31,20 +31,18 @@ const DetailItem: React.FC<Detail> = (props) => {
                     )}
                 </div>
             </div>
-            <div className='flex items-end gap-2 justify-between'>
-                <div className='flex items-end gap-2'>
-                    <div className='text-2xl font-bold'>{props.title}</div>
-                </div>
-            </div>
-            <div>
-                <div className='flex gap-1 justify-end items-center'>
-                    <div className='text-sm'>
-                        {currencyIcon[props.currency]}
+            <div className='flex flex-col gap-1 md:flex-row'>
+                <div className='text-2xl font-bold flex-1'>{props.title}</div>
+                <div className='md:min-w-max'>
+                    <div className='flex gap-1 justify-end items-center'>
+                        <div className='text-xs'>
+                            {currencyIcon[props.currency]}
+                        </div>
+                        <div className='text-lg font-bold'>{props.amount}</div>
                     </div>
-                    <div className='text-lg font-bold'>{props.amount}</div>
-                </div>
-                <div className='text-xs text-right'>
-                    {props.shouldPay.map((user) => user.name).join(', ')}
+                    <div className='text-xs text-right'>
+                        {props.shouldPay.map((user) => user.name).join(', ')}
+                    </div>
                 </div>
             </div>
         </ListItemContainer>

@@ -1,10 +1,28 @@
-import React, { PropsWithChildren, ReactNode, useState } from 'react';
+import React, {
+    PropsWithChildren,
+    ReactNode,
+    forwardRef,
+    useImperativeHandle,
+    useRef,
+    useState,
+} from 'react';
 import { IoCaretDown, IoCaretUp } from 'react-icons/io5';
 import { motion } from 'framer-motion';
 import { useClosing } from '../_hook/useClosing';
 
-const Collapse: React.FC<PropsWithChildren<{ title: ReactNode }>> = (props) => {
-    const [show, setShow] = useState(false);
+interface Controller {
+    opened: boolean;
+    open: () => void;
+    close: () => void;
+}
+
+export const useCollapse = () => useRef<Controller>(null);
+
+const Collapse = forwardRef<
+    Controller,
+    PropsWithChildren<{ defaultOpen?: boolean; title: ReactNode }>
+>((props, ref) => {
+    const [show, setShow] = useState(props.defaultOpen || false);
     const { onClose, componentProps } = useClosing(
         () => setShow(false),
         {
@@ -24,6 +42,13 @@ const Collapse: React.FC<PropsWithChildren<{ title: ReactNode }>> = (props) => {
             },
         }
     );
+
+    useImperativeHandle(ref, () => ({
+        opened: show,
+        open: () => setShow(true),
+        close: onClose,
+    }));
+
     return (
         <div>
             <div
@@ -40,6 +65,8 @@ const Collapse: React.FC<PropsWithChildren<{ title: ReactNode }>> = (props) => {
             )}
         </div>
     );
-};
+});
+
+Collapse.displayName = 'Collapse';
 
 export default Collapse;
