@@ -1,6 +1,7 @@
 import React from 'react';
 import CreateForm from './CreateForm';
 import { PageProps } from '@/app/_lib/next-type';
+import Button from "@/app/_component/button/Button";
 
 export default async function Page(props: PageProps) {
     const balanceId = parseInt(props.params.id);

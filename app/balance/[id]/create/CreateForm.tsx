@@ -15,6 +15,8 @@ import { FieldValues } from 'react-hook-form';
 import SubmitButton from '@/app/_component/form/SubmitButton';
 import Input from '@/app/_component/form/input/Input';
 import Title from '@/app/_component/form/field/Title';
+import Button from "@/app/_component/button/Button";
+import OutlineButton from "@/app/_component/button/OutlineButton";
 
 type CreateFormProps = {
     balanceId: number;
@@ -120,9 +122,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                     setPayById={(payById) => setDetail({ ...detail, payById })}
                 />
             )}
-            <SubmitButton className='w-full justify-center mt-5'>
-                新增
-            </SubmitButton>
+            <div className='flex flex-col md:flex-row [&>*]:flex-1 [&>*]:shrink-0 w-full mt-5 gap-4'>
+                <SubmitButton>
+                    新增
+                </SubmitButton>
+                <OutlineButton href={ `/balance/${props.balanceId}` } className='w-full'>取消</OutlineButton>
+            </div>
         </Form>
     );
 };
