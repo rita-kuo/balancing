@@ -22,7 +22,6 @@ const GroupFields: React.FC<GroupFieldsProps> = (props) => {
       })) || [],
     [props.groupMembers],
   );
-  console.log("member", memberOptions);
 
   return (
     <>
