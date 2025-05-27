@@ -22,3 +22,6 @@ export const put = (
     body: body ? JSON.stringify(body) : undefined,
     headers,
   });
+
+export const del = (url: string, headers?: Record<string, string>) =>
+  fetch(url, { method: "DELETE", headers });

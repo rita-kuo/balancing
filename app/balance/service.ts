@@ -237,6 +237,18 @@ const BalanceService = () => {
             }),
           );
       }),
+    deleteBalanceDetail: async (id: number) =>
+      await execute((client) =>
+        client.shouldPay
+          .deleteMany({
+            where: { detailId: id },
+          })
+          .finally(() =>
+            client.detail.delete({
+              where: { id },
+            }),
+          ),
+      ),
   };
 };
 

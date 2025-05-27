@@ -18,3 +18,11 @@ export async function PUT(
   await BalanceService().updateBalanceDetail(data);
   return new NextResponse();
 }
+
+export async function DELETE(
+  request: NextRequest,
+  context: { params: { detailId: string } },
+) {
+  await BalanceService().deleteBalanceDetail(parseInt(context.params.detailId));
+  return new NextResponse();
+}
