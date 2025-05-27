@@ -17,6 +17,9 @@ const BalanceService = () => {
                         ownerType: type,
                         ownerId: id,
                     },
+                    orderBy: {
+                        start: 'desc',
+                    }
                 })
             ),
         getBalanceById: async (id: number) =>
