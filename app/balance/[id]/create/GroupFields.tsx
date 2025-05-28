@@ -29,7 +29,7 @@ const GroupFields: React.FC<GroupFieldsProps> = (props) => {
         options={memberOptions}
         name="payById"
         label="支付者"
-        option={{ valueAsNumber: true }}
+        option={{ valueAsNumber: true, required: "請選擇支付者" }}
       />
       <div className="flex gap-4">
         <Title required className="mb-auto" label="應支付者" />
