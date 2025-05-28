@@ -10,11 +10,12 @@ import DetailTypeField from "@/app/_component/britad/balance/DetailTypeField";
 import Form from "@/app/_component/form/Form";
 import { InputField } from "@/app/_component/form/field/InputField";
 import { CurrencySelect } from "@/app/_component/britad/balance/CurrencySelect";
-import { FieldValues } from "react-hook-form";
 import SubmitButton from "@/app/_component/form/SubmitButton";
 import Input from "@/app/_component/form/input/Input";
 import Title from "@/app/_component/form/field/Title";
 import OutlineButton from "@/app/_component/button/OutlineButton";
+import { toLocaleISODateString } from "@/app/_util/date";
+import { FieldValues } from "react-hook-form";
 import { post, put } from "@/app/_util/api";
 
 type CreateFormProps = {
@@ -44,23 +45,31 @@ const EditForm: React.FC<CreateFormProps> = (props) => {
   const { close } = useModal();
   const router = useRouter();
 
-  const [detail, setDetail] = useState<Detail>(
-    props.detail ??
-      ({
-        balanceId: props.balance.id,
-        type: "EXPENSE",
-        title: "",
-        amount: 0,
-        currency: props.balance.currency,
-        payById: parseInt(localstorage.get("userId") || ""),
-      } as Detail),
+  const [detail, setDetail] = useState<
+    Partial<Omit<Detail, "date"> & { date: string }>
+  >(
+    props.detail
+      ? {
+          ...props.detail,
+          date: toLocaleISODateString(new Date(props.detail.date)),
+        }
+      : {
+          balanceId: props.balance.id,
+          date: toLocaleISODateString(new Date()),
+          type: "EXPENSE",
+          title: "",
+          amount: 0,
+          currency: props.balance.currency,
+          payById: parseInt(localstorage.get("userId") || ""),
+        },
   );
 
   const onCreate = useCallback(
-    async (data: FieldValues) => {
+    (data: FieldValues) => {
       const isEdit = !!props.detail;
       data = {
         ...data,
+        date: new Date(data.date),
         shouldPayList: (data.shouldPayList as number[]).map((num) => ({
           userId: num,
         })),
@@ -100,6 +109,13 @@ const EditForm: React.FC<CreateFormProps> = (props) => {
 
   return (
     <Form onSubmit={onCreate} defaultValue={detail}>
+      <InputField
+        type="datetime-local"
+        required
+        label="時間"
+        name="date"
+        direction="horizontal"
+      />
       <InputField required label="項目" name="title" direction="horizontal" />
       <DetailTypeField />
       <div className="flex gap-2 items-center [&>*+*]:my-auto">

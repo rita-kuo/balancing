@@ -9,7 +9,7 @@ import { useFormContext } from "react-hook-form";
 
 interface GroupFieldsProps {
   groupMembers: User[];
-  payById: number;
+  payById?: number;
   setPayById: (value: number) => void;
 }
 const GroupFields: React.FC<GroupFieldsProps> = (props) => {
