@@ -20,7 +20,7 @@ jobs:
 
       - name: build docker
         id: build-docker
-        run: docker build -t "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}" .
+        run: docker build --build-arg DATABASE_URL="${{secrets.DATABASE_URL}}" -t "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}" .
 
       - name: save docker image
         id: save-docker
@@ -52,4 +52,4 @@ jobs:
 
       - name: deploy
         id: deploy
-        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "cd ${{env.FOLDER}} && docker load -i ${{env.DOCKER_IMAGE}}.tar && docker run --rm -d --network main_network --name ${{env.DOCKER_IMAGE}} -p 3002:3000 ${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"
+        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "cd ${{env.FOLDER}} && docker load -i ${{env.DOCKER_IMAGE}}.tar && (docker rm ${{env.DOCKER_IMAGE}} || true) && docker run --rm -d --network main_network --name ${{env.DOCKER_IMAGE}} -p 3001:3000 ${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"

@@ -14,10 +14,13 @@ COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
 
-RUN npx prisma migrate deploy
-RUN npx prisma generate
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 
 RUN rm -f .env.local
+
+RUN npx prisma generate
+RUN npx prisma migrate deploy
 
 RUN npm run build
 
