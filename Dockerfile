@@ -30,7 +30,12 @@ RUN npm run build
 FROM node:18-alpine AS runner
 WORKDIR /app
 
+RUN apk add --no-cache openssl
+
 ENV NODE_ENV production
+
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
