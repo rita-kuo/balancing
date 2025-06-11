@@ -10,6 +10,8 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+RUN apk add --no-cache openssl
+
 COPY --from=deps /app/node_modules ./node_modules
 
 COPY . .
