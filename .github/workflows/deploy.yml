@@ -1,0 +1,55 @@
+name: deploy
+
+on: workflow_dispatch
+
+env:
+  DOCKER_IMAGE: balancing
+  VERSION: '1.0'
+  TARGET_FOLDER: images
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v3
+
+      - name: define build version
+        id: default-version
+        run: echo "TAG_VERSION=${GITHUB_RUN_ID}" >> $GITHUB_ENV
+
+      - name: build docker
+        id: build-docker
+        run: docker build -t "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}" .
+
+      - name: save docker image
+        id: save-docker
+        run: docker save -o "${{env.DOCKER_IMAGE}}.tar" "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"
+
+      - name: setup ssh
+        id: setup-ssh
+        run: |
+          echo "${{secrets.SSH_KEY}}" > key.pem
+          chmod 600 key.pem
+
+      - name: setup known hosts
+        id: setup-known-hosts
+        run: |
+          touch known_hosts
+          ssh-keyscan "${{secrets.SSH_HOST}}" >> known_hosts
+
+      - name: set folder
+        id: set-folder
+        run: echo "FOLDER="/${{env.TARGET_FOLDER}}/${{env.DOCKER_IMAGE}}"" >> $GITHUB_ENV
+
+      - name: create folder if not exist
+        id: create-folder
+        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "mkdir -p ${{env.FOLDER}} && docker stop ${{env.DOCKER_IMAGE}} || true"
+
+      - name: upload image
+        id: upload-image
+        run: scp -i key.pem -o UserKnownHostsFile=known_hosts -v "${{env.DOCKER_IMAGE}}.tar" "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}:${{env.FOLDER}}/${{env.DOCKER_IMAGE}}.tar"
+
+      - name: deploy
+        id: deploy
+        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "cd ${{env.FOLDER}} && docker load -i ${{env.DOCKER_IMAGE}}.tar && (docker rm ${{env.DOCKER_IMAGE}} || true) && docker run --rm -d --network main_network --name ${{env.DOCKER_IMAGE}} -p 3001:3000 -e DATABASE_URL="${{secrets.DATABASE_URL}}" ${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"
