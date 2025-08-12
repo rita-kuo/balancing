@@ -1,14 +1,19 @@
 import groupService from "../service";
 import AddMemberButton from "./AddMember";
 import { IoPerson } from "@/app/_lib/icons";
-import CreateBalaceButton from "@/app/_component/britad/balance/CreateButton";
+import CreateBalanceButton from "@/app/_component/britad/balance/CreateButton";
 import { PageProps } from "@/app/_lib/next-type";
 import Members from "./MemberList";
 import BalanceList from "./BalanceList";
+import userService from "@/app/user/service";
+import { User } from "@/app/_model/user";
 
 export default async function Page(props: PageProps) {
   const groupId = Number.parseInt(props.params?.id);
   const group = await groupService().getGroupById(groupId);
+  const addMemberOptions = (await userService().getUsers({
+    notInGroup: groupId,
+  })) as User[];
   return (
     <div className="[&>*+*]:mt-5">
       <div className="flex justify-between">
@@ -19,7 +24,10 @@ export default async function Page(props: PageProps) {
             {group?.members.length}
           </div>
         </div>
-        <AddMemberButton groupId={groupId} />
+        <AddMemberButton
+          groupId={groupId}
+          addMemberOptions={addMemberOptions}
+        />
       </div>
       <div className="w-full flex h-28 overflow-auto [&>*+*]:ml-4">
         <Members groupId={groupId} />
@@ -27,7 +35,7 @@ export default async function Page(props: PageProps) {
       <div className="border-t" />
       <div className="flex items-end">
         <div className="text-2xl font-bold">收支表</div>
-        <CreateBalaceButton ownerType="GROUP" ownerId={groupId} />
+        <CreateBalanceButton ownerType="GROUP" ownerId={groupId} />
       </div>
       <div>
         <BalanceList groupId={groupId} />
