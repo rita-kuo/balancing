@@ -19,9 +19,7 @@ export const Dashboard = () => {
 
     init.current = true;
     (code && state
-      ? post("/api/line/login", { code, state })
-          .then(() => get("/api/me"))
-          .then(refreshUser)
+      ? post("/api/line/login", { code, state }).then(refreshUser)
       : userState === "init"
         ? refreshUser().then()
         : Promise.resolve()

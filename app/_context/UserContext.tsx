@@ -55,10 +55,12 @@ export const UserProvider = (props: { children: ReactNode }) => {
     if (
       !loading.current &&
       !pathname.startsWith("/login") &&
-      pathname !== "/dashboard"
+      !pathname.endsWith("/dashboard")
     ) {
       loading.current = true;
-      refreshUser().then();
+      refreshUser().then(() => {
+        loading.current = false;
+      });
     }
   }, [pathname, state, refreshUser]);
 
