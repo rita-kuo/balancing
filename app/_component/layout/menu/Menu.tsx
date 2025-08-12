@@ -59,7 +59,7 @@ const Menu: React.FC<MenuProps> = (props) => {
   return (
     <ClickOutsideContainer
       onOutsideClick={props.onClose}
-      className="absolute top-0 right-0 w-[70vw] md:w-[20vw] h-screen bg-white"
+      className="fixed top-0 right-0 w-[70vw] md:w-[20vw] h-screen bg-white z-50"
     >
       <div className="relative p-3 bg-primary-200 min-h-full space-y-2">
         <IoClose

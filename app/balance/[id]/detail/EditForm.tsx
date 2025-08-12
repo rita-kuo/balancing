@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Balance, Detail, Group, OwnerType, User } from "@prisma/client";
-import useLocalStorage from "@/app/_hook/useLocalStorage";
 import GroupFields from "../create/GroupFields";
 import { useModal } from "@/app/_hook/useModal";
 import { useRouter } from "next/navigation";
@@ -14,9 +13,11 @@ import SubmitButton from "@/app/_component/form/SubmitButton";
 import Input from "@/app/_component/form/input/Input";
 import Title from "@/app/_component/form/field/Title";
 import OutlineButton from "@/app/_component/button/OutlineButton";
-import { toLocaleISODateString } from "@/app/_util/date";
 import { FieldValues } from "react-hook-form";
 import { post, put } from "@/app/_util/api";
+import useUserContext from "@/app/_context/UserContext";
+import { toLocaleISODateString } from "@/app/_util/date";
+import { useLoading } from "@/app/_context/LoadingContext";
 
 type CreateFormProps = {
   balance: BalanceType;
@@ -35,7 +36,8 @@ type BalanceType = Partial<
 >;
 
 const EditForm: React.FC<CreateFormProps> = (props) => {
-  const localstorage = useLocalStorage();
+  const { currentUser, state } = useUserContext();
+  const setLoading = useLoading();
 
   const defaultCurrency = useMemo(
     () => props.balance.currency,
@@ -45,26 +47,12 @@ const EditForm: React.FC<CreateFormProps> = (props) => {
   const { close } = useModal();
   const router = useRouter();
 
-  const [detail, setDetail] = useState<
-    Partial<Omit<Detail, "date"> & { date: string }>
-  >(
-    props.detail
-      ? {
-          ...props.detail,
-          date: toLocaleISODateString(
-            props.detail.date ? new Date(props.detail.date) : new Date(),
-          ),
-        }
-      : {
-          balanceId: props.balance.id,
-          date: toLocaleISODateString(new Date()),
-          type: "EXPENSE",
-          title: "",
-          amount: 0,
-          currency: props.balance.currency,
-          payById: parseInt(localstorage.get("userId") || ""),
-        },
-  );
+  const [detail, setDetail] =
+    useState<Partial<Omit<Detail, "date"> & { date: string }>>();
+
+  useEffect(() => {
+    setLoading(!detail);
+  }, [detail, setLoading]);
 
   const onCreate = useCallback(
     (data: FieldValues) => {
@@ -97,17 +85,34 @@ const EditForm: React.FC<CreateFormProps> = (props) => {
   );
 
   useEffect(() => {
-    const defaultPayById =
-      props.balance.ownerType === OwnerType.GROUP
-        ? props.balance.group?.members[0]?.id || 0
-        : 0;
+    if (state !== "init") {
+      const defaultPayById =
+        props.balance.ownerType === OwnerType.GROUP
+          ? props.balance.group?.members[0]?.id || 0
+          : 0;
 
-    setDetail((detail) => ({
-      ...detail,
-      currency: props.balance.currency || "TWD",
-      payById: detail.payById || defaultPayById,
-    }));
-  }, [props.balance]);
+      setDetail(
+        props.detail
+          ? {
+              ...props.detail,
+              date: toLocaleISODateString(
+                props.detail.date ? new Date(props.detail.date) : new Date(),
+              ),
+            }
+          : {
+              balanceId: props.balance.id,
+              date: toLocaleISODateString(new Date()),
+              type: "EXPENSE",
+              title: "",
+              amount: 0,
+              currency: props.balance.currency || "TWD",
+              payById: currentUser?.id || defaultPayById,
+            },
+      );
+    }
+  }, [props.balance, props.detail, currentUser, state]);
+
+  if (!detail) return <></>;
 
   return (
     <Form onSubmit={onCreate} defaultValue={detail}>
