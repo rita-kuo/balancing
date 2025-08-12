@@ -5,7 +5,7 @@ import BalanceService from "@/app/balance/service";
 import Link from "next/link";
 
 export default async function Page(props: PageProps) {
-  const balanceId = parseInt(props.params.id);
+  const balanceId = parseInt((await props.params).id);
   const balance = await BalanceService().getBalanceById(balanceId);
   return (
     <div className="space-y-4">

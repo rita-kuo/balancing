@@ -13,9 +13,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const groupId = Number.parseInt(context.params.id);
+  const groupId = Number.parseInt((await context.params).id);
   const body = await request.json();
   await groupService().addMember(groupId, body.id);
   return new NextResponse();

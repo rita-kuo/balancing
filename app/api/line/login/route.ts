@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   )
-    .then((res) => res.json())
+    .then((res) => res?.json())
     .then((data) => data.id_token as string);
 
   const profile = (await post(
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-  ).then((res) => res.json())) as {
+  ).then((res) => res?.json())) as {
     exp: number;
     nonce: string;
     name: string;

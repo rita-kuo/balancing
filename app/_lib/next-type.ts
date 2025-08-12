@@ -1,4 +1,4 @@
 export type PageProps = {
-    params: { [slug: string]: string };
-    searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ [slug: string]: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };

@@ -18,12 +18,12 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   var data = await request.json();
   await BalanceService().createBalanceDetail({
     ...data,
-    balanceId: parseInt(context.params.id),
+    balanceId: parseInt((await context.params).id),
   });
   return new NextResponse();
 }

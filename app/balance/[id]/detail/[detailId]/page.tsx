@@ -4,9 +4,10 @@ import EditForm from "@/app/balance/[id]/detail/EditForm";
 import React from "react";
 
 export default async function Page(props: PageProps) {
-  const balanceId = parseInt(props.params.id);
+  const params = await props.params;
+  const balanceId = parseInt(params.id);
   const balance = await BalanceService().getBalanceById(balanceId);
-  const detailId = Number.parseInt(props.params.detailId);
+  const detailId = Number.parseInt(params.detailId);
   const detail = await BalanceService().getDetailById(detailId);
   return (
     <div className="space-y-4">

@@ -15,7 +15,7 @@ const LoginWithLine = () => {
   const onClick = useCallback(() => {
     setLoading(true);
     post("/api/line/create-login-info")
-      .then((res) => res.json())
+      .then((res) => res?.json())
       .then((info: { state: string; nonce: string; client_id: string }) => {
         const payload = {
           ...info,

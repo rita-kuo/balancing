@@ -4,8 +4,9 @@ import { UserProvider } from "@/app/_context/UserContext";
 import ModalContextProvider from "@/app/_component/modal/ModalContextProvider";
 import LoadingContextProvider from "@/app/_context/LoadingContext";
 import Header from "@/app/_component/layout/Header";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Balancing | BritaD",
   description: "BritaD Balancing Service",
 };

@@ -9,7 +9,7 @@ import userService from "@/app/user/service";
 import { User } from "@/app/_model/user";
 
 export default async function Page(props: PageProps) {
-  const groupId = Number.parseInt(props.params?.id);
+  const groupId = Number.parseInt((await props.params)?.id);
   const group = await groupService().getGroupById(groupId);
   const addMemberOptions = (await userService().getUsers({
     notInGroup: groupId,

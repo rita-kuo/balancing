@@ -7,8 +7,8 @@ import Analysis from "./Analysis";
 import Separator from "@/app/_component/Separator";
 
 export default async function Page(props: PageProps) {
-  const page = parseInt(props.searchParams.page as string) || 1;
-  const balanceId = Number.parseInt(props.params.id);
+  const page = parseInt((await props.searchParams).page as string) || 1;
+  const balanceId = Number.parseInt((await props.params).id);
   const balance = await BalanceService().getBalanceById(balanceId);
 
   return (

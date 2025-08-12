@@ -22,6 +22,7 @@ export const post = (
   }).catch((err) => {
     if (err.statusCode === 401) {
       window.location.href = "/login";
+      return null;
     } else {
       throw err;
     }
