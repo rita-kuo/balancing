@@ -76,3 +76,15 @@ model ShouldPay {
   userId   Int
   user     User   @relation(fields: [userId], references: [id])
 }
+
+model LoginInfo {
+  id         Int       @id @default(autoincrement())
+  state      String    @default(nanoid(5))
+  nonce      String    @default(nanoid(10))
+  email      String?
+  ip         String?
+  idToken    String?
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+  loggedInAt DateTime?
+}
