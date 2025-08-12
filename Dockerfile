@@ -23,6 +23,11 @@ COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
+# 安裝 SSL 相關套件，確保 Prisma binary 相容
+RUN apt-get update && \
+    apt-get install -y openssl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 # 指定 Prisma binary target（請確保你已在 schema.prisma 中設定 binaryTargets）
 RUN npx prisma generate
 
