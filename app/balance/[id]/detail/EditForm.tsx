@@ -51,7 +51,9 @@ const EditForm: React.FC<CreateFormProps> = (props) => {
     props.detail
       ? {
           ...props.detail,
-          date: toLocaleISODateString(new Date(props.detail.date)),
+          date: toLocaleISODateString(
+            props.detail.date ? new Date(props.detail.date) : new Date(),
+          ),
         }
       : {
           balanceId: props.balance.id,

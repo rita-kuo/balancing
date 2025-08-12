@@ -30,7 +30,7 @@ const DeleteModal: React.FC<Detail> = (props) => {
         <div className="flex items-center gap-2 [&>*]:w-full">
           <Button
             disabled={disabled}
-            defaultStyle="bg-red-200 text-red-500"
+            baseStyle="bg-red-200 text-red-500"
             hoverStyle="hover:bg-red-400 hover:text-white"
             onClick={() => {
               setDisabled(true);
