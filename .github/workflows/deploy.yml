@@ -20,7 +20,7 @@ jobs:
 
       - name: build docker
         id: build-docker
-        run: docker build -t "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}" .
+        run: docker build -t "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}" --build-arg DATABASE_URL="${{secrets.DATABASE_URL}}" .
 
       - name: save docker image
         id: save-docker
