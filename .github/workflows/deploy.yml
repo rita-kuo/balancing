@@ -53,4 +53,4 @@ jobs:
 
       - name: deploy
         id: deploy
-        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "cd ${{env.FOLDER}} && docker load -i ${{env.DOCKER_IMAGE}}.tar && (docker rm ${{env.DOCKER_IMAGE}} || true) && docker run --rm -d --network main_network --name ${{env.DOCKER_IMAGE}} -p 3001:3000 -e DATABASE_URL="${{secrets.DATABASE_URL}}" -e CHANNEL_ID="${{secrets.CHANNEL_ID}}" -e CHANNEL_SECRET="${{secrets.CHANNEL_SECRET}}" ${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"
+        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "cd ${{env.FOLDER}} && docker load -i ${{env.DOCKER_IMAGE}}.tar && (docker rm ${{env.DOCKER_IMAGE}} || true) && docker run --rm -d --network main_network --name ${{env.DOCKER_IMAGE}} -p 3001:3000 -e DATABASE_URL="${{secrets.DATABASE_URL}}" -e HOST_NAME="${{env.HOST_NAME}}" -e CHANNEL_ID="${{secrets.CHANNEL_ID}}" -e CHANNEL_SECRET="${{secrets.CHANNEL_SECRET}}" ${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"

@@ -1,7 +1,7 @@
 # Install dependencies only when needed
 FROM node:18-slim AS deps
 
-# 安裝 SSL 相關套件，確保 Prisma binary 相容
+# 安裝 SSL ，確保 Prisma binary 相容
 RUN apt-get update && \
     apt-get install -y openssl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -23,9 +23,9 @@ COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 ARG HOST_NAME
-ENV NEXT_PUBLIC_DATABASE_URL=${HOST_NAME}
+ENV NEXT_PUBLIC_HOST_NAME=${HOST_NAME}
 
-# 安裝 SSL 相關套件，確保 Prisma binary 相容
+# 安裝 SSL 確保 Prisma binary 相容
 RUN apt-get update && \
     apt-get install -y openssl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -45,7 +45,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# 安裝 SSL 支援
+# 安裝 SSL 確保 Prisma binary 相容
 RUN apt-get update && \
     apt-get install -y openssl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
@@ -57,6 +57,7 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/next.config.js ./
 
 # 開放 port
 EXPOSE 3000

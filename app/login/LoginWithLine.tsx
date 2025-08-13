@@ -48,7 +48,7 @@ const LoginWithLine = () => {
           )}
         >
           <Image
-            src="/lineLogo.png"
+            src="/images/lineLogo.png"
             alt="LINE Logo"
             width={100}
             height={100}
