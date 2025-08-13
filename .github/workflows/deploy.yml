@@ -6,6 +6,7 @@ env:
   DOCKER_IMAGE: balancing
   VERSION: '1.0'
   TARGET_FOLDER: images
+  HOST_NAME: 'https://balancing.britadtw.com'
 
 jobs:
   build:
@@ -20,7 +21,7 @@ jobs:
 
       - name: build docker
         id: build-docker
-        run: docker build -t "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}" --build-arg DATABASE_URL="${{secrets.DATABASE_URL}}" .
+        run: docker build -t "${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}" --build-arg DATABASE_URL="${{secrets.DATABASE_URL}}" --build-arg HOST_NAME="${{env.HOST_NAME}}" .
 
       - name: save docker image
         id: save-docker
@@ -52,4 +53,4 @@ jobs:
 
       - name: deploy
         id: deploy
-        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "cd ${{env.FOLDER}} && docker load -i ${{env.DOCKER_IMAGE}}.tar && (docker rm ${{env.DOCKER_IMAGE}} || true) && docker run --rm -d --network main_network --name ${{env.DOCKER_IMAGE}} -p 3001:3000 -e DATABASE_URL="${{secrets.DATABASE_URL}}" ${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"
+        run: ssh -i key.pem -o UserKnownHostsFile=known_hosts "${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}" "cd ${{env.FOLDER}} && docker load -i ${{env.DOCKER_IMAGE}}.tar && (docker rm ${{env.DOCKER_IMAGE}} || true) && docker run --rm -d --network main_network --name ${{env.DOCKER_IMAGE}} -p 3001:3000 -e DATABASE_URL="${{secrets.DATABASE_URL}}" -e CHANNEL_ID="${{secrets.CHANNEL_ID}}" -e CHANNEL_SECRET="${{secrets.CHANNEL_SECRET}}" ${{env.DOCKER_IMAGE}}:${{env.VERSION}}.${{env.TAG_VERSION}}"

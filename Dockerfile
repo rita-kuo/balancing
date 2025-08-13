@@ -22,6 +22,8 @@ COPY . .
 
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
+ARG HOST_NAME
+ENV NEXT_PUBLIC_DATABASE_URL=${HOST_NAME}
 
 # 安裝 SSL 相關套件，確保 Prisma binary 相容
 RUN apt-get update && \
