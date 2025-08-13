@@ -58,9 +58,7 @@ export const UserProvider = (props: { children: ReactNode }) => {
       !pathname.endsWith("/dashboard")
     ) {
       loading.current = true;
-      refreshUser().then(() => {
-        loading.current = false;
-      });
+      refreshUser().then();
     }
   }, [pathname, state, refreshUser]);
 
