@@ -1,7 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { isBefore } from "date-fns";
-import { parseInt } from "lodash";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -19,7 +17,7 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
   const expires = request.cookies.get("expires")?.value;
 
-  if (!expires || !token || isBefore(new Date(parseInt(expires)), new Date())) {
+  if (!expires || !token || parseInt(expires) < Date.now()) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
