@@ -34,7 +34,7 @@ const Button: React.FC<ButtonProps> = (props) => {
       <button
         {...buttonProps}
         type={type ?? "button"}
-        disabled={props.disabled || props.loading}
+        disabled={buttonProps.disabled || loading}
         className={clsx(
           style,
           baseStyle ?? defaultBaseStyle,
@@ -47,7 +47,16 @@ const Button: React.FC<ButtonProps> = (props) => {
         {children}
       </button>
     ),
-    [buttonProps, type, props, children],
+    [
+      props,
+      buttonProps,
+      type,
+      loading,
+      children,
+      baseStyle,
+      hoverStyle,
+      disabledStyle,
+    ],
   );
   return href ? <Link href={href}>{content}</Link> : content;
 };

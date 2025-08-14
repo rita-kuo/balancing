@@ -13,13 +13,13 @@ import SubmitButton from "../../form/SubmitButton";
 import { post } from "@/app/_util/api";
 import { CurrencySelectField } from "./CurrencySelect";
 
-type BalaceProps = {
+type BalanceProps = {
   ownerId: number;
   ownerType: OwnerType;
 };
 
 const createBalance = "新增收支表";
-type CreateModalProps = ModalProps & BalaceProps;
+type CreateModalProps = ModalProps & BalanceProps;
 
 const CreateModal: React.FC<CreateModalProps> = (props) => {
   const { close } = useModal();
@@ -62,7 +62,7 @@ const CreateModal: React.FC<CreateModalProps> = (props) => {
   );
 };
 
-const CreateBalanceButton: React.FC<BalaceProps> = (props) => {
+const CreateBalanceButton: React.FC<BalanceProps> = (props) => {
   const { open, close } = useModal();
   return (
     <Button

@@ -1,3 +1,4 @@
+"use server";
 import { Balance, Detail, OwnerType, ShouldPay } from "@prisma/client";
 import { execute } from "../_util/prisma";
 import {
@@ -249,6 +250,28 @@ const BalanceService = () => {
             }),
           ),
       ),
+    deleteBalance: async (id: number) => {
+      await execute((client) =>
+        client.shouldPay
+          .deleteMany({
+            where: {
+              detail: {
+                balanceId: id,
+              },
+            },
+          })
+          .then(() =>
+            client.detail.deleteMany({
+              where: { balanceId: id },
+            }),
+          )
+          .then(() =>
+            client.balance.delete({
+              where: { id },
+            }),
+          ),
+      );
+    },
   };
 };
 

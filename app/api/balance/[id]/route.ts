@@ -10,3 +10,12 @@ export async function GET(
   );
   return NextResponse.json(data);
 }
+
+export async function DELETE(
+  _: NextRequest,
+  context: { params: Promise<{ id: string }> },
+) {
+  const id = parseInt((await context.params).id);
+  await BalanceService().deleteBalance(id);
+  return NextResponse.json({ success: true });
+}

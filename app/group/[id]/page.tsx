@@ -7,6 +7,9 @@ import Members from "./MemberList";
 import BalanceList from "./BalanceList";
 import userService from "@/app/user/service";
 import { User } from "@/app/_model/user";
+import BalanceService from "@/app/balance/service";
+import { OwnerType } from "@prisma/client";
+import { Balance } from "@/app/_model/balance";
 
 export default async function Page(props: PageProps) {
   const groupId = Number.parseInt((await props.params)?.id);
@@ -14,6 +17,10 @@ export default async function Page(props: PageProps) {
   const addMemberOptions = (await userService().getUsers({
     notInGroup: groupId,
   })) as User[];
+  const balanceList = (await BalanceService().getBalanceList(
+    OwnerType.GROUP,
+    groupId,
+  )) as Balance[];
   return (
     <div className="[&>*+*]:mt-5">
       <div className="flex justify-between">
@@ -38,7 +45,7 @@ export default async function Page(props: PageProps) {
         <CreateBalanceButton ownerType="GROUP" ownerId={groupId} />
       </div>
       <div>
-        <BalanceList groupId={groupId} />
+        <BalanceList balanceList={balanceList} />
       </div>
     </div>
   );

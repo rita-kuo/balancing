@@ -45,11 +45,16 @@ export const put = (
     }
   });
 
-export const del = (url: string, headers?: Record<string, string>) =>
-  fetch(url, { method: "DELETE", headers }).catch((err) => {
-    if (err.statusCode === 401) {
+export const del = async (url: string, headers?: Record<string, string>) => {
+  const res = await fetch(url, { method: "DELETE", headers });
+
+  if (!res.ok) {
+    if (res.status === 401) {
       window.location.href = "/login";
-    } else {
-      throw err;
+      return;
     }
-  });
+    throw new Error(`Request failed with status ${res.status}: ${res.body}`);
+  }
+
+  return res;
+};
