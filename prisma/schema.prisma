@@ -15,6 +15,7 @@ datasource db {
 model User {
   id        Int         @id @default(autoincrement())
   email     String      @unique
+  avatar    String?
   name      String
   group     Group[]
   details   Detail[]

@@ -89,10 +89,21 @@ export async function POST(request: NextRequest) {
       client.user.create({
         data: {
           email: profile.email,
+          avatar: profile.picture,
           name: profile.name,
         },
       }),
     ).then();
+  else if (user.avatar !== profile.picture) {
+    await execute((client) =>
+      client.user.update({
+        where: { id: user.id },
+        data: {
+          avatar: profile.picture,
+        },
+      }),
+    );
+  }
 
   const response = new NextResponse();
   response.cookies.set("token", idToken);

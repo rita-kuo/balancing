@@ -9,6 +9,7 @@ import { IoBusiness, IoLogOut, IoPerson } from "react-icons/all";
 import Link from "next/link";
 import useUserContext from "@/app/_context/UserContext";
 import { post } from "@/app/_util/api";
+import Avatar from "@/app/_component/britad/user/Avatar";
 
 interface MenuProps extends ModalProps {}
 
@@ -72,9 +73,7 @@ const Menu: React.FC<MenuProps> = (props) => {
             onClick={() => props.onClose()}
           >
             <div className="flex gap-3 items-center">
-              <div className="bg-primary-600 rounded-full">
-                <IoPerson className="p-3.5 h-14 w-14 text-white" />
-              </div>
+              <Avatar user={currentUser} size="h-14 w-14" />
               <div className="flex-1">{currentUser?.name ?? "登入"}</div>
             </div>
           </Clickable>
