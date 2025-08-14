@@ -22,11 +22,11 @@ export default async function Page(props: PageProps) {
     groupId,
   )) as Balance[];
   return (
-    <div className="[&>*+*]:mt-5">
-      <div className="flex justify-between">
-        <div className="flex gap-4 items-end">
-          <div className="font-bold text-3xl">{group?.name}</div>
-          <div className="flex items-center">
+    <div className="space-y-5">
+      <div className="flex items-center">
+        <div className="flex-1">
+          <h1 className="inline">{group?.name}</h1>
+          <div className="ml-4 items-center inline-flex">
             <IoPerson className="mr-1" />
             {group?.members.length}
           </div>

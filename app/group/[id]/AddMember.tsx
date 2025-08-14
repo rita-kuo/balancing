@@ -60,7 +60,10 @@ const AddMemberButton: React.FC<{
 }> = (props) => {
   const { open, close } = useModal();
   return (
-    <Button onClick={() => open(<AddMemberModal {...props} onClose={close} />)}>
+    <Button
+      className="h-max"
+      onClick={() => open(<AddMemberModal {...props} onClose={close} />)}
+    >
       {addMember}
     </Button>
   );
