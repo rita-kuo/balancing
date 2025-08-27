@@ -3,7 +3,7 @@ import { execute } from "@/app/_util/prisma";
 import { post } from "@/app/_util/api";
 import queryString from "querystring";
 import { ipAddress } from "@vercel/functions";
-import { addSeconds } from "date-fns";
+import { addDays } from "date-fns";
 
 /**
  * login with LINE login response
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
   };
 
   if (loginInfo.nonce !== profile.nonce) throw new Error("Nonce mismatch");
-  const expiresAt = addSeconds(new Date(), profile.exp);
+  const expiresAt = addDays(new Date(), 30);
   await execute((client) =>
     client.loginInfo.update({
       where: { id: loginInfo.id },
