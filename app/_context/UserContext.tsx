@@ -55,6 +55,7 @@ export const UserProvider = (props: { children: ReactNode }) => {
     if (
       !loading.current &&
       !pathname.startsWith("/login") &&
+      !pathname.includes("/util") &&
       !pathname.endsWith("/dashboard")
     ) {
       loading.current = true;
